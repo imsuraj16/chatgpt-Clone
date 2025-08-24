@@ -1,19 +1,21 @@
 const { Server } = require("socket.io");
-const cookie = require('cookie')
-const jwt = require('jsonwebtoken');
-const userModel = require("../models/user.model");
-const generateResponse = require('../service/ai.service');
+const cookie = require("cookie");
+const jwt = require("jsonwebtoken");
+const { generateContent, generateEmbeddings } = require("../service/ai.service");
 const messageModel = require("../models/message.model");
+const userModel = require("../models/user.model.js");
+const { createMemoryVector, queryMemory } = require("../service/vector.service");
 
 
-function initSocket(httpServer) {
-
+const socketInit = (httpServer) => {
     const io = new Server(httpServer, { /* options */ });
+
     io.use(async (socket, next) => {
-        const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
+        const cookies = cookie.parse(socket.handshake.headers?.cookie || "")
 
         if (!cookies.token) {
-            next(new Error("Authentication error: No token provided"));
+            next(new Error("Unauthorized user"))
+
         }
 
         try {
@@ -22,45 +24,77 @@ function initSocket(httpServer) {
             socket.user = user
             next()
         } catch (error) {
-            next(new Error("Authentication error: Invalid token"));
+            next(new Error("Unauthorized"))
         }
+
     })
 
-    io.on('connection', (socket) => {
+    io.on("connection", (socket) => {
+
+        console.log('user connected');
 
         socket.on('ai-msg', async (messagePayload) => {
 
-             await messageModel.create({
-                user : socket.user._id,
-                chat : messagePayload.chat,
-                message : messagePayload.message,
-                role : 'user'
+            const savedMessage = await messageModel.create({
+                message: messagePayload.message,
+                user: socket.user._id,
+                chat: messagePayload.chat,
+                role: 'user'
             })
 
-            const chatHistory = await messageModel.find({
-                chat:messagePayload.chat
-            })
-            console.log(chatHistory);
-            
-       
-            
+            const vectors = await generateEmbeddings(messagePayload.message)
 
-            const response = await generateResponse(messagePayload.message)
+            await createMemoryVector(savedMessage._id, vectors, { message: messagePayload.message, chat: messagePayload.chat, user: socket.user._id, role: savedMessage.role })
 
-            await messageModel.create({
-                user : socket.user._id,
-                chat : messagePayload.chat,
-                message : response,
-                role : 'model'
-            })
 
-            socket.emit('ai-response', {
-                reply: response,
+            const chatmessage = (await messageModel.find({
                 chat: messagePayload.chat
+            }).sort({ createdAt: -1 }).limit(3).lean()).reverse()
+
+            const queryMathces = await queryMemory(vectors, 3)
+
+            const ltm = queryMathces.map((item) => {
+                return {
+                    role: item.metadata.role,
+                    parts: [{ text: item.metadata.message }]
+                }
+
             })
+
+
+            const stm = chatmessage.map((item) => {
+                return {
+                    role: item.role,
+                    parts: [{ text: item.message }]
+                }
+            })
+
+
+
+            const response = await generateContent([...ltm,...stm])
+
+            const savedResponse = await messageModel.create({
+                message: response,
+                user: socket.user._id,
+                chat: messagePayload.chat,
+                role: 'model'
+            })
+
+            const responseVectors = await generateEmbeddings(response)
+
+            await createMemoryVector(savedResponse._id, responseVectors, { message: response, chat: messagePayload.chat, user: socket.user._id, role: savedResponse.role })
+
+            socket.emit('ai-response', response)
         })
+
     })
 }
 
+module.exports = socketInit;
 
-module.exports = initSocket
+
+
+
+
+
+// can you tell which library we have discussed before ?,and there related questions which i asked from you?
