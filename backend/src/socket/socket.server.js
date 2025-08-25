@@ -8,7 +8,15 @@ const { createMemoryVector, queryMemory } = require("../service/vector.service")
 
 
 const socketInit = (httpServer) => {
-    const io = new Server(httpServer, { /* options */ });
+    const io = new Server(httpServer, {
+        cors: {
+            origin: "http://localhost:5173",
+            credentials: true,
+            methods: ["GET", "POST"]
+        }
+    });
+
+    
 
     io.use(async (socket, next) => {
         const cookies = cookie.parse(socket.handshake.headers?.cookie || "")

@@ -21,7 +21,9 @@ const registerUser = async (req, res) => {
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
     res.cookie("token", token);
 
-    res.status(201).json({ message: "User registered successfully", user: newUser });
+    const { password: _, ...userWithoutPassword } = newUser.toObject();
+
+    res.status(201).json({ message: "User registered successfully", user: userWithoutPassword });
 
 };
 
@@ -44,8 +46,21 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
     res.cookie("token", token);
 
-    res.status(200).json({ message: "User logged in successfully" });
+    const { password: __, ...userWithoutPassword } = user.toObject();
+
+    res.status(200).json({ message: "User logged in successfully", user: userWithoutPassword });
 }
 
+const getLoggedInUser = async (req, res) => {
+    // req.user is attached by authMiddleware
+    const user = await userModel.findById(req.user._id).select("-password");
+    res.status(200).json({ user });
+};
 
-module.exports = { registerUser, loginUser };
+const logoutUser = (req, res) => {
+    res.clearCookie("token");
+    res.status(200).json({ message: "User logged out successfully" });
+};
+
+
+module.exports = { registerUser, loginUser, getLoggedInUser, logoutUser };
