@@ -13,11 +13,18 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    // Handle login logic here
-    dispatch(loginUser(data));
-    navigate("/");
-  };
+ const onSubmit = async (data) => {
+  try {
+    const result = await dispatch(loginUser(data)).unwrap();
+    if (result.user) {
+      navigate("/"); 
+    } else {
+      alert(result.message || "Invalid credentials");
+    }
+  } catch (err) {
+    alert("Invalid email or password"); 
+  }
+};
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">

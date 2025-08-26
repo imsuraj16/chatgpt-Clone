@@ -47,7 +47,7 @@ const socketInit = (httpServer) => {
                 message: messagePayload.message,
                 user: socket.user._id,
                 chat: messagePayload.chat,
-                role: 'user'
+                role: messagePayload.role
             })
 
             const vectors = await generateEmbeddings(messagePayload.message)
@@ -92,7 +92,7 @@ const socketInit = (httpServer) => {
 
             await createMemoryVector(savedResponse._id, responseVectors, { message: response, chat: messagePayload.chat, user: socket.user._id, role: savedResponse.role })
 
-            socket.emit('ai-response', response)
+            socket.emit('ai-response', savedResponse)
         })
 
     })
@@ -100,9 +100,3 @@ const socketInit = (httpServer) => {
 
 module.exports = socketInit;
 
-
-
-
-
-
-// can you tell which library we have discussed before ?,and there related questions which i asked from you?

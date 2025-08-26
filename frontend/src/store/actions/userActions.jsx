@@ -1,47 +1,35 @@
-import { get } from "react-hook-form";
 import axios from "../../api/axiosconfig";
-import { loadUser, logout } from "../reducers/userSlice";
-import { getChats } from "./chatActions";
-import { clearChats } from "../reducers/chatsSlice";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const registerUser = (userData) => async (dispatch) => {
+
+export const registerUser = createAsyncThunk("user/registerUser",async(credentials,{rejectWithValue})=>{
     try {
-        const { data } = await axios.post('/api/auth/signup', userData);
-        dispatch(loadUser(data.user));
+        const {data} = await axios.post("/api/auth/signup",credentials);
+        
     } catch (error) {
-        console.error("Registration failed", error.response.data);
-        // You might want to dispatch an error action here
-        // to show an error message in the UI.
+        return rejectWithValue(error.response?.data?.message)
     }
-};
+})
 
-export const loginUser = (credentials) => async (dispatch) => {
+
+export const loginUser = createAsyncThunk('user/loginUser',async(credentials,{rejectWithValue})=>{
+
     try {
-        const { data } = await axios.post('/api/auth/login', credentials);
-        dispatch(loadUser(data.user));
-        dispatch(getChats())
+        const{data} = await axios.post('/api/auth/login',credentials)
+        return data
+        
     } catch (error) {
-        console.error("Login failed", error.response.data);
-        // You might want to dispatch an error action here.
+        return rejectWithValue(error.response?.data?.message)
     }
-};
+})
 
-export const getUser = () => async (dispatch) => {
+
+export const fetchUser = createAsyncThunk('user/fetchUser',async(_,{rejectWithValue})=>{
     try {
-        const { data } = await axios.get('/api/auth/me');
-        dispatch(loadUser(data.user));
+      const {data} = await axios.get('api/auth/me') 
+      return(data.user);
+      
     } catch (error) {
-        // This can fail if the cookie/token is invalid or expired.
-        // It's often not considered a critical error to show to the user
-        // unless you want to force a re-login.
-        console.error("Failed to get user", error.response?.data);
+       return rejectWithValue(error.response?.data?.message)
     }
-};
-
-
-export const logoutUser = () => async (dispatch) => {
-
-    await axios.get('/api/auth/logout');
-    dispatch(logout());
-    dispatch(clearChats());
-};
+})
