@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUser, loginUser, registerUser } from "../actions/userActions";
-import Login from "../../pages/Login";
+import { fetchUser, loginUser, registerUser, logOut } from "../actions/userActions";
 
 const userSlice = createSlice({
   name: "user",
@@ -10,16 +9,17 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    logout: (state, action) => {
+    // optional: client side logout without hitting server
+    logout: (state) => {
       state.user = null;
       state.error = null;
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
     builder
 
-      //register
-
+      // register
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -33,8 +33,7 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      //login
-
+      // login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -49,8 +48,7 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      //fetch user
-
+      // fetch user
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -61,9 +59,21 @@ const userSlice = createSlice({
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
+        state.user = null; // 👈 important fix
+        state.error = action.payload;
+      })
+
+      // logout (server-side)
+      .addCase(logOut.fulfilled, (state) => {
+        state.user = null;
+        state.error = null;
+        localStorage.removeItem("user");
+      })
+      .addCase(logOut.rejected, (state, action) => {
         state.error = action.payload;
       });
   },
 });
 
 export default userSlice.reducer;
+export const { logout } = userSlice.actions;

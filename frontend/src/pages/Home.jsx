@@ -11,12 +11,12 @@ import {
   LogIn,
   Send,
 } from "lucide-react";
-// import { logoutUser } from "../store/actions/userActions";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { getChatMessages } from "../store/actions/messageActions";
 import { useRef } from "react";
 import { addAiMessage, addUserMessage } from "../store/reducers/messageSlice";
+import { logOut } from "../store/actions/userActions";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -261,7 +261,7 @@ const Home = () => {
                 <p className="text-sm font-medium truncate">User</p>
               </div>
               <button
-                onClick={() => dispatch(logoutUser())}
+                onClick={() => dispatch(logOut())}
                 className="p-1.5 hover:bg-zinc-800 rounded transition-colors"
               >
                 <LogOut className="w-4 h-4 text-zinc-500" />
