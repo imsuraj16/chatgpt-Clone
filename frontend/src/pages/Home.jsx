@@ -14,7 +14,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { getChatMessages } from "../store/actions/messageActions";
-import { addAiMessage, addUserMessage } from "../store/reducers/messageSlice";
+import { addAiMessage, addUserMessage, clearMessages } from "../store/reducers/messageSlice";
+import { clearChats } from "../store/reducers/chatsSlice";
 import { logOut } from "../store/actions/userActions";
 
 const Home = () => {
@@ -29,6 +30,15 @@ const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false); // new state for mobile sidebar
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
+
+  // When user logs out, reset local selected chat & clear state (immediate UI update)
+  useEffect(() => {
+    if (!user) {
+      setSelectedChatId(null);
+      dispatch(clearMessages());
+      dispatch(clearChats());
+    }
+  }, [user, dispatch]);
 
   useEffect(() => {
     socketRef.current = io("http://localhost:3000", {

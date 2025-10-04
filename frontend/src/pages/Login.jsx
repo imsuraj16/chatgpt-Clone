@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../store/actions/userActions";
+import { getChats } from "../store/actions/chatActions";
 
 const Login = () => {
   const {
@@ -17,6 +18,8 @@ const Login = () => {
   try {
     const user = await dispatch(loginUser(data)).unwrap();
     if (user) {
+      // Immediately load chats after login
+      dispatch(getChats());
       navigate("/");
     } else {
       alert("Invalid credentials");

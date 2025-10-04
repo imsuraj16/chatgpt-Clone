@@ -39,8 +39,6 @@ const socketInit = (httpServer) => {
 
     io.on("connection", (socket) => {
 
-        console.log('user connected');
-
         socket.on('ai-msg', async (messagePayload) => {
 
             const savedMessage = await messageModel.create({

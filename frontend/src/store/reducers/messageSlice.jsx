@@ -18,8 +18,11 @@ const messageSlice = createSlice({
     addAiMessage: (state, action) => {
       state.message.push(action.payload);
     },
+    clearMessages: (state) => {
+      state.message = [];
+    }
   },
 });
 
-export const { loadMessage, addUserMessage,addAiMessage } = messageSlice.actions;
+export const { loadMessage, addUserMessage,addAiMessage, clearMessages } = messageSlice.actions;
 export default messageSlice.reducer;
