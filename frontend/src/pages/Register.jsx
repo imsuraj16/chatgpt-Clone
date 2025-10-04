@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../store/actions/userActions";
 
 const Register = () => {
@@ -11,7 +11,8 @@ const Register = () => {
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch();
-  const onSubmit = (data) => {
+  const navigate = useNavigate();
+  const onSubmit = async (data) => {
     const payload = {
       fullName: {
         firstName: data.firstName,
@@ -20,7 +21,12 @@ const Register = () => {
       email: data.email,
       password: data.password,
     };
-    dispatch(registerUser(payload));
+    try {
+      const user = await dispatch(registerUser(payload)).unwrap();
+      if (user) navigate("/");
+    } catch (e) {
+      alert(e || "Registration failed");
+    }
   };
 
   return (

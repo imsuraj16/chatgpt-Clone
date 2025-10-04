@@ -1,6 +1,6 @@
 const { Pinecone } = require('@pinecone-database/pinecone');
 
-const pc = new Pinecone({ apiKey: process.env.PINOCONE_API_KEY });
+const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
 const chatgpt = pc.index('chat-gpt');
 
 

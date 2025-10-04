@@ -15,14 +15,14 @@ const Login = () => {
 
  const onSubmit = async (data) => {
   try {
-    const result = await dispatch(loginUser(data)).unwrap();
-    if (result.user) {
-      navigate("/"); 
+    const user = await dispatch(loginUser(data)).unwrap();
+    if (user) {
+      navigate("/");
     } else {
-      alert(result.message || "Invalid credentials");
+      alert("Invalid credentials");
     }
   } catch (err) {
-    alert("Invalid email or password"); 
+    alert(err || "Invalid email or password");
   }
 };
 

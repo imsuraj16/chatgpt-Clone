@@ -25,7 +25,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload; // normalized user
         state.loading = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -39,7 +39,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload; // normalized user
         localStorage.setItem("user", JSON.stringify(action.payload));
         state.loading = false;
       })
@@ -54,7 +54,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload; // normalized user
         state.loading = false;
       })
       .addCase(fetchUser.rejected, (state, action) => {
