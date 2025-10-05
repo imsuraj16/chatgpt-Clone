@@ -41,7 +41,7 @@ const Home = () => {
   }, [user, dispatch]);
 
   useEffect(() => {
-    socketRef.current = io("https://chatgpt-clone-steel-alpha.vercel.app", {
+    socketRef.current = io("https://chatgpt-clone-ankk.onrender.com", {
     withCredentials: true,
     transports: ["websocket"],
     reconnection: true,
