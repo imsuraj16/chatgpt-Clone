@@ -7,12 +7,11 @@ const cors = require('cors');
 
 const app = express()
 app.use(cors({
-    origin : 'https://chatgpt-clone-steel-alpha.vercel.app',
+    origin : 'https://chatgpt-clone-dgpm.vercel.app',
     credentials : true
 }))
 app.use(express.json())
 app.use(cookieParser())
-
 
 
 //auth**routes**//
