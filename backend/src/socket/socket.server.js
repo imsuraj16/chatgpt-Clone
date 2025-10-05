@@ -10,7 +10,7 @@ const { createMemoryVector, queryMemory } = require("../service/vector.service")
 const socketInit = (httpServer) => {
     const io = new Server(httpServer, {
         cors: {
-            origin: "https://chatgpt-clone-dgpm.vercel.app",
+            origin: process.env.SOCKET_ORIGIN,
             credentials: true,
             methods: ["GET", "POST"],
             allowedHeaders: ["Authorization", "Content-Type"]
