@@ -42,7 +42,12 @@ const Home = () => {
 
   useEffect(() => {
     socketRef.current = io("https://chatgpt-clone-steel-alpha.vercel.app", {
-      withCredentials: true,
+    withCredentials: true,
+    transports: ["websocket"],
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 2000,
+    autoConnect: true,
     });
 
     socketRef.current.on("connect", () => {

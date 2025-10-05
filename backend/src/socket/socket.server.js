@@ -12,7 +12,8 @@ const socketInit = (httpServer) => {
         cors: {
             origin: "https://chatgpt-clone-steel-alpha.vercel.app",
             credentials: true,
-            methods: ["GET", "POST"]
+            methods: ["GET", "POST"],
+            allowedHeaders: ["Authorization", "Content-Type"]
         }
     });
 
