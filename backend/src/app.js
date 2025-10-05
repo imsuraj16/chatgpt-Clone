@@ -8,7 +8,9 @@ const cors = require('cors');
 const app = express()
 app.use(cors({
     origin : process.env.CORS_ORIGIN,
-    credentials : true
+    credentials : true,
+    allowedHeaders : ["Authorization", "Content-Type"],
+    methods : ["GET","POST"],
 }))
 app.use(express.json())
 app.use(cookieParser())
