@@ -41,7 +41,7 @@ const Home = () => {
   }, [user, dispatch]);
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:3000", {
+    socketRef.current = io("https://chatgpt-clone-steel-alpha.vercel.app", {
       withCredentials: true,
     });
 
