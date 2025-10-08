@@ -31,15 +31,15 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
-      <div className="bg-gray-900 p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center mb-8">
+      <div className="bg-zinc-950 border border-zinc-800 p-8 rounded-lg shadow-2xl w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center mb-8 text-white">
           Login to Your Account
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-500"
+              className="block text-sm font-medium text-zinc-400"
             >
               Email
             </label>
@@ -53,9 +53,9 @@ const Login = () => {
                   message: "Invalid email address",
                 },
               })}
-              className={`mt-1 block w-full px-4 py-2 bg-gray-800 border ${
-                errors.email ? "border-red-500" : "border-gray-700"
-              } rounded-md shadow-sm placeholder-gray-600 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+              className={`mt-1 block w-full px-4 py-2 bg-black border ${
+                errors.email ? "border-red-500" : "border-zinc-800"
+              } rounded-md shadow-sm placeholder-zinc-600 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="you@example.com"
             />
             {errors.email && (
@@ -67,7 +67,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-500"
+              className="block text-sm font-medium text-zinc-400"
             >
               Password
             </label>
@@ -81,9 +81,9 @@ const Login = () => {
                   message: "Password must be at least 6 characters",
                 },
               })}
-              className={`mt-1 block w-full px-4 py-2 bg-gray-800 border ${
-                errors.password ? "border-red-500" : "border-gray-700"
-              } rounded-md shadow-sm placeholder-gray-600 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+              className={`mt-1 block w-full px-4 py-2 bg-black border ${
+                errors.password ? "border-red-500" : "border-zinc-800"
+              } rounded-md shadow-sm placeholder-zinc-600 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
               placeholder="••••••••"
             />
             {errors.password && (
@@ -101,7 +101,7 @@ const Login = () => {
             </button>
           </div>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-500">
+        <p className="mt-6 text-center text-sm text-zinc-500">
           Don't have an account?{" "}
           <Link
             to="/register"
